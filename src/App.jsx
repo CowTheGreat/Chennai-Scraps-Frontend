@@ -7,6 +7,11 @@ import Home from './pages/Home';
 import Cart from './pages/Cart';
 import Orders from './pages/Orders';
 import Profile from './pages/Profile';
+import SellNow from './pages/SellNow';
+import Resources from './pages/Resources';
+import Faqs from './pages/Faqs';
+import AboutUs from './pages/AboutUs';
+import Services from './pages/Services';
 
 // Components
 import LoginModal from './components/LoginModal';
@@ -41,12 +46,30 @@ function App() {
             <Link to="/" className="text-2xl font-bold text-blue-600">
               Chennai-Scraps
             </Link>
-            <div className="flex gap-4 items-center">
+            <div className="flex flex-wrap gap-4 items-center">
+              <Link to="/" className="text-gray-700 hover:text-blue-600 font-semibold">
+                Home
+              </Link>
+              <Link to="/sell-now" className="text-gray-700 hover:text-blue-600 font-semibold">
+                Sell Now
+              </Link>
+              <Link to="/resources" className="text-gray-700 hover:text-blue-600 font-semibold">
+                Resources
+              </Link>
+              <Link to="/faqs" className="text-gray-700 hover:text-blue-600 font-semibold">
+                FAQs
+              </Link>
+              <Link to="/about-us" className="text-gray-700 hover:text-blue-600 font-semibold">
+                About Us
+              </Link>
+              <Link to="/services" className="text-gray-700 hover:text-blue-600 font-semibold">
+                Services
+              </Link>
+              <Link to="/cart" className="text-gray-700 hover:text-blue-600 font-semibold">
+                Cart
+              </Link>
               {isLoggedIn && (
                 <>
-                  <Link to="/cart" className="text-gray-700 hover:text-blue-600 font-semibold">
-                    Cart
-                  </Link>
                   <Link to="/orders" className="text-gray-700 hover:text-blue-600 font-semibold">
                     Orders
                   </Link>
@@ -76,6 +99,11 @@ function App() {
         {/* Routes */}
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/sell-now" element={<SellNow />} />
+          <Route path="/resources" element={<Resources />} />
+          <Route path="/faqs" element={<Faqs />} />
+          <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/services" element={<Services />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/profile" element={<Profile />} />
