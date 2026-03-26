@@ -4,9 +4,12 @@ import { authAPI } from '../services/api';
 export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
   const [step, setStep] = useState('phone'); // 'phone' or 'otp'
   const [phone, setPhone] = useState('');
+  const [referralCode, setReferralCode] = useState('');
   const [otp, setOtp] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const digitsOnlyPhone = phone.replace(/\D/g, '').slice(-10);
+  const canSendOtp = digitsOnlyPhone.length === 10;
 
   if (!isOpen) return null;
 
@@ -15,7 +18,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
     try {
       setLoading(true);
       setError(null);
-      await authAPI.sendOTP(phone);
+      await authAPI.sendOTP(digitsOnlyPhone);
       setStep('otp');
     } catch (err) {
       setError(err.message);
@@ -29,10 +32,10 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
     try {
       setLoading(true);
       setError(null);
-      const response = await authAPI.verifyOTP(phone, otp);
+      const response = await authAPI.verifyOTP(digitsOnlyPhone, otp, referralCode);
       localStorage.setItem('access_token', response.access);
       localStorage.setItem('refresh_token', response.refresh);
-      localStorage.setItem('phone', phone);
+      localStorage.setItem('phone', digitsOnlyPhone);
       onLoginSuccess();
       onClose();
     } catch (err) {
@@ -43,10 +46,18 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">
-          {step === 'phone' ? 'Login' : 'Verify OTP'}
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-xl p-6 sm:p-8 w-full max-w-md relative">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-2xl text-gray-500 hover:text-gray-700"
+          aria-label="Close"
+        >
+          ×
+        </button>
+
+        <h2 className="text-3xl font-semibold text-gray-800 mb-6">
+          {step === 'phone' ? 'Login with your mobile number' : 'Enter OTP'}
         </h2>
 
         {error && (
@@ -57,29 +68,50 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
 
         {step === 'phone' ? (
           <form onSubmit={handleSendOTP}>
+            <div className="w-full mb-4 border-2 border-green-500 rounded-lg flex items-center overflow-hidden">
+              <span className="px-3 py-3 bg-gray-50 border-r text-gray-700 font-medium">+91</span>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="99999 99999"
+                className="w-full px-4 py-3 focus:outline-none"
+                required
+              />
+            </div>
+
+            <p className="text-sm text-gray-600 mb-6">
+              By signing in, I agree to{' '}
+              <a href="#" className="text-blue-600 underline">T&C</a>
+              {' '}and{' '}
+              <a href="#" className="text-blue-600 underline">Privacy Policy</a>
+            </p>
+
             <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="91XXXXXXXXXX"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
+              type="text"
+              value={referralCode}
+              onChange={(e) => setReferralCode(e.target.value.toUpperCase().trim())}
+              placeholder="Referral Code (optional)"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+
             <button
               type="submit"
-              disabled={loading}
-              className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-400"
+              disabled={loading || !canSendOtp}
+              className={`w-full text-white py-3 rounded-xl text-2xl font-semibold transition-colors ${
+                canSendOtp ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400 hover:bg-gray-500'
+              } disabled:cursor-not-allowed`}
             >
               {loading ? 'Sending OTP...' : 'Send OTP'}
             </button>
           </form>
         ) : (
           <form onSubmit={handleVerifyOTP}>
-            <p className="text-gray-600 mb-4">OTP sent to {phone}</p>
+            <p className="text-gray-600 mb-4">OTP sent to +91 {digitsOnlyPhone}</p>
             <input
               type="text"
               value={otp}
-              onChange={(e) => setOtp(e.target.value.slice(0, 6))}
+              onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
               placeholder="000000"
               maxLength="6"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 text-center text-2xl"
@@ -97,17 +129,10 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
               onClick={() => setStep('phone')}
               className="w-full bg-gray-300 text-gray-800 py-2 rounded-lg font-semibold hover:bg-gray-400"
             >
-              Back
+              Change Number
             </button>
           </form>
         )}
-
-        <button
-          onClick={onClose}
-          className="mt-4 w-full text-gray-600 hover:text-gray-800"
-        >
-          Close
-        </button>
       </div>
     </div>
   );

@@ -27,6 +27,13 @@ const extractApiErrorMessage = (error, status) => {
   return `API Error: ${status}`;
 };
 
+const toCollection = (data) => {
+  if (Array.isArray(data)) {
+    return data;
+  }
+  return Array.isArray(data?.results) ? data.results : [];
+};
+
 const apiCall = async (endpoint, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
   const token = localStorage.getItem('access_token');
@@ -63,12 +70,13 @@ export const authAPI = {
       }),
     }),
   
-  verifyOTP: (phone, otp) =>
+  verifyOTP: (phone, otp, referredByCode = '') =>
     apiCall('/auth/verify-otp/', {
       method: 'POST',
       body: JSON.stringify({
         phone_number: normalizePhone(phone),
         otp_code: String(otp || '').replace(/\D/g, '').slice(0, 6),
+        referred_by_code: String(referredByCode || '').trim().toUpperCase(),
       }),
     }),
 };
@@ -76,10 +84,7 @@ export const authAPI = {
 export const catalogAPI = {
   getCategories: async () => {
     const data = await apiCall('/catalog/categories/');
-    if (Array.isArray(data)) {
-      return data;
-    }
-    return Array.isArray(data?.results) ? data.results : [];
+    return toCollection(data);
   },
   
   getCategory: (id) =>
@@ -93,8 +98,43 @@ export const ordersAPI = {
       body: JSON.stringify(orderData),
     }),
   
-  getOrders: () =>
-    apiCall('/orders/'),
+  getOrders: async () => {
+    const data = await apiCall('/orders/');
+    return toCollection(data);
+  },
+};
+
+export const userAPI = {
+  getMe: () => apiCall('/auth/users/me/'),
+
+  updateProfile: (payload) =>
+    apiCall('/auth/users/update_profile/', {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+    }),
+
+  getAddresses: async () => {
+    const data = await apiCall('/auth/addresses/');
+    return toCollection(data);
+  },
+
+  createAddress: (payload) =>
+    apiCall('/auth/addresses/', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
+  updateAddress: (id, payload) =>
+    apiCall(`/auth/addresses/${id}/`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    }),
+
+  setDefaultAddress: (id) =>
+    apiCall(`/auth/addresses/${id}/set_default/`, {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
 };
 
 export default apiCall;
