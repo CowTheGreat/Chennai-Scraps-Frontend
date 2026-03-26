@@ -94,8 +94,8 @@ export default function Resources() {
               onClick={() => setActiveFilter(filter)}
               className={`px-4 py-2 rounded-xl whitespace-nowrap font-bold border transition-colors ${
                 activeFilter === filter
-                  ? 'bg-green-700 text-white border-green-700'
-                  : 'bg-green-50 text-green-900 border-green-100 hover:bg-green-100'
+                  ? 'bg-blue-700 text-white border-blue-700'
+                  : 'bg-blue-50 text-blue-900 border-blue-100 hover:bg-blue-100'
               }`}
             >
               {filter}
@@ -117,7 +117,7 @@ export default function Resources() {
                     {blog.categories.map((category) => (
                       <span
                         key={category}
-                        className="inline-flex items-center px-4 py-1.5 rounded-xl border-2 border-green-600 text-green-700 font-bold text-sm"
+                        className="inline-flex items-center px-4 py-1.5 rounded-xl border-2 border-blue-600 text-blue-700 font-bold text-sm"
                       >
                         {category}
                       </span>
@@ -126,7 +126,7 @@ export default function Resources() {
                   <h2 className="text-2xl font-bold text-gray-900 mb-2">{blog.title}</h2>
                   <p className="text-gray-700 text-lg font-bold leading-relaxed mb-2">
                     {blog.excerpt}
-                    <span className="text-green-700 underline ml-2">Read more</span>
+                    <span className="text-blue-700 underline ml-2">Read more</span>
                   </p>
                   <p className="text-gray-600 text-xl font-bold italic">Last Modified: {blog.modified}</p>
                 </div>

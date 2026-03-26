@@ -52,6 +52,7 @@ export default function Faqs() {
 
   useEffect(() => {
     document.title = 'Chennai Scraps FAQs | Sell Old Appliances with Doorstep Pickup';
+    window.scrollTo({ top: 0, behavior: 'auto' });
   }, []);
 
   const filteredFaqs = useMemo(() => {

@@ -152,4 +152,14 @@ export const serviceAPI = {
     }),
 };
 
+export const marketingAPI = {
+  subscribeWhatsApp: (phone) =>
+    apiCall('/catalog/whatsapp-subscribers/', {
+      method: 'POST',
+      body: JSON.stringify({
+        phone_number: normalizePhone(phone),
+      }),
+    }),
+};
+
 export default apiCall;

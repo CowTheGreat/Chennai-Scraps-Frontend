@@ -45,7 +45,7 @@ export default function Services() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-white">
       <section className="max-w-6xl mx-auto px-6 pt-14 pb-8">
         <h1 className="text-5xl font-bold text-slate-900 leading-tight">
           Chennai Scrap & Utility Services: Metal Roofing, Bulk Scrap Pickup, and CCTV Installation
@@ -108,7 +108,7 @@ export default function Services() {
           </p>
 
           {success && (
-            <div className="mt-4 bg-emerald-50 border border-emerald-300 text-emerald-700 rounded-lg px-4 py-3">
+            <div className="mt-4 bg-blue-50 border border-blue-300 text-blue-700 rounded-lg px-4 py-3">
               {success}
             </div>
           )}
@@ -127,7 +127,7 @@ export default function Services() {
                 value={form.full_name}
                 onChange={onChange}
                 required
-                className="mt-1 w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="mt-1 w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
@@ -139,7 +139,7 @@ export default function Services() {
                 required
                 maxLength={10}
                 placeholder="9876543210"
-                className="mt-1 w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="mt-1 w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div className="md:col-span-2">
@@ -150,7 +150,7 @@ export default function Services() {
                 onChange={onChange}
                 required
                 rows={3}
-                className="mt-1 w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="mt-1 w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
@@ -159,7 +159,7 @@ export default function Services() {
                 name="service_name"
                 value={form.service_name}
                 onChange={onChange}
-                className="mt-1 w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="mt-1 w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="CCTV_INSTALLATION">CCTV Camera Installation</option>
                 <option value="METAL_ROOFING">Metal Roofing</option>
@@ -173,7 +173,7 @@ export default function Services() {
                 value={form.notes}
                 onChange={onChange}
                 placeholder="Preferred time, landmark, quantity details"
-                className="mt-1 w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="mt-1 w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -181,7 +181,7 @@ export default function Services() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full md:w-auto bg-emerald-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-emerald-800 disabled:bg-emerald-400"
+                className="w-full md:w-auto bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-800 disabled:bg-blue-400"
               >
                 {loading ? 'Submitting...' : 'Book a Call'}
               </button>

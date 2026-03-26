@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { catalogAPI } from '../services/api';
+import { catalogAPI, marketingAPI } from '../services/api';
 
 const inferCategoryType = (category = {}) => {
   if (category.category_type) {
@@ -21,6 +21,9 @@ export default function Home() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [subscriberPhone, setSubscriberPhone] = useState('');
+  const [subscribeStatus, setSubscribeStatus] = useState({ type: '', message: '' });
+  const [isSubscribing, setIsSubscribing] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -79,8 +82,8 @@ export default function Home() {
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Sell {category.name}</h3>
               <p className="text-gray-600 font-semibold mb-4 min-h-[48px]">{category.description || 'Get the best resale value with doorstep pickup.'}</p>
               <div className="flex justify-between items-center">
-                <span className="text-2xl font-bold text-green-700">Old Up To: ₹{category.base_price}</span>
-                <Link to="/sell-now" className="bg-green-600 text-white font-bold px-4 py-2 rounded-lg hover:bg-green-700">
+                <span className="text-2xl font-bold text-blue-700">Old Up To: ₹{category.base_price}</span>
+                <Link to="/sell-now" className="bg-blue-600 text-white font-bold px-4 py-2 rounded-lg hover:bg-blue-700">
                   Sell Now
                 </Link>
               </div>
@@ -91,8 +94,41 @@ export default function Home() {
     </section>
   );
 
+  const handleSubscribe = async () => {
+    const normalized = String(subscriberPhone || '').replace(/\D/g, '').slice(-10);
+    if (normalized.length !== 10) {
+      setSubscribeStatus({ type: 'error', message: 'Please enter a valid 10-digit mobile number.' });
+      return;
+    }
+
+    try {
+      setIsSubscribing(true);
+      setSubscribeStatus({ type: '', message: '' });
+      await marketingAPI.subscribeWhatsApp(normalized);
+      setSubscribeStatus({ type: 'success', message: 'Subscribed successfully. You will receive updates on WhatsApp.' });
+      setSubscriberPhone('');
+    } catch (subscribeError) {
+      setSubscribeStatus({
+        type: 'error',
+        message: subscribeError.message || 'Could not subscribe right now. Please try again.',
+      });
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+        <div className="rounded-3xl overflow-hidden border border-gray-200 shadow-md p-4 md:p-6 bg-white">
+          <img
+            src="/home/hero.png"
+            alt="Chennai Scraps doorstep electronics pickup"
+            className="w-full h-[260px] md:h-[420px] object-cover rounded-2xl"
+          />
+        </div>
+      </section>
+
       {renderCategorySection('Sell Large Appliances', groupedCategories.LARGE)}
       {renderCategorySection('Sell Small Appliances', groupedCategories.SMALL)}
       {renderCategorySection('Sell Electronics and Gadgets', groupedCategories.TECH)}
@@ -101,17 +137,17 @@ export default function Home() {
         <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900">Sell Used Electronics in 3 Simple Steps</h2>
         <p className="text-center text-gray-700 font-semibold mt-2 mb-6">India's largest online platform for selling used electronics</p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-green-100 rounded-2xl p-6 text-center border border-green-200">
+          <div className="bg-blue-100 rounded-2xl p-6 text-center border border-blue-200">
             <div className="text-3xl mb-3">💰</div>
             <h3 className="text-2xl font-bold mb-2">Get the Best Offer</h3>
             <p className="font-semibold text-gray-700">Find out your product value in just a few clicks.</p>
           </div>
-          <div className="bg-green-100 rounded-2xl p-6 text-center border border-green-200">
+          <div className="bg-blue-100 rounded-2xl p-6 text-center border border-blue-200">
             <div className="text-3xl mb-3">🚚</div>
             <h3 className="text-2xl font-bold mb-2">Doorstep Pickup</h3>
             <p className="font-semibold text-gray-700">Schedule now and we will pick up your product within 24-48 hours.</p>
           </div>
-          <div className="bg-green-100 rounded-2xl p-6 text-center border border-green-200">
+          <div className="bg-blue-100 rounded-2xl p-6 text-center border border-blue-200">
             <div className="text-3xl mb-3">⚡</div>
             <h3 className="text-2xl font-bold mb-2">Instant Payment</h3>
             <p className="font-semibold text-gray-700">Receive your payment online immediately.</p>
@@ -125,7 +161,7 @@ export default function Home() {
           <p className="text-center text-gray-700 font-semibold mt-2 mb-8">Eco-friendly recycling by a trusted e-waste pickup network</p>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div className="rounded-2xl bg-green-50 border border-green-100 p-8">
+            <div className="rounded-2xl bg-blue-50 border border-blue-100 p-8">
               <h3 className="text-2xl font-bold mb-4">Fast, Transparent, Reliable</h3>
               <ul className="space-y-3 text-gray-800 font-semibold">
                 <li>Transparent pricing with no hidden charges.</li>
@@ -135,7 +171,7 @@ export default function Home() {
                 <li>Trusted across Chennai for responsible e-waste handling.</li>
               </ul>
             </div>
-            <div className="rounded-2xl bg-green-900 text-white p-8">
+            <div className="rounded-2xl bg-blue-900 text-white p-8">
               <h3 className="text-2xl font-bold mb-4">Our Journey So Far</h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
@@ -157,7 +193,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-green-900 py-12 text-white">
+      <section className="bg-blue-900 py-12 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           <div>
             <h2 className="text-4xl font-bold mb-3">Bulk Pickup Made Easy</h2>
@@ -165,12 +201,19 @@ export default function Home() {
               Partner with Chennai Scraps for efficient bulk appliance pickups that simplify responsible recycling.
             </p>
             <p className="font-bold mb-5">Housing Societies | Institutions | Offices</p>
-            <button className="px-6 py-3 border-2 border-white rounded-lg font-bold hover:bg-white hover:text-green-900 transition-colors">
+            <Link
+              to="/services"
+              className="inline-block px-6 py-3 border-2 border-white rounded-lg font-bold hover:bg-white hover:text-blue-900 transition-colors"
+            >
               Bulk Pickup Request
-            </button>
+            </Link>
           </div>
-          <div className="bg-white/10 border border-white/30 rounded-2xl p-8 text-center text-lg font-bold">
-            bulkpickup
+          <div className="bg-white/10 border border-white/30 rounded-2xl p-3">
+            <img
+              src="/home/buk-pickup.png"
+              alt="Bulk pickup service by Chennai Scraps"
+              className="w-full h-[260px] md:h-[320px] object-cover rounded-xl"
+            />
           </div>
         </div>
       </section>
@@ -185,7 +228,7 @@ export default function Home() {
             'What if my brand or category is not listed in options?',
             'Is there any fee for doorstep pickup service?',
           ].map((question) => (
-            <details key={question} className="bg-white border border-gray-300 rounded-lg px-4 py-3">
+            <details key={question} className="bg-white border border-blue-200 rounded-lg px-4 py-3">
               <summary className="cursor-pointer text-lg font-bold text-gray-900">{question}</summary>
               <p className="mt-3 text-gray-700 font-semibold">
                 Please raise a request and our team will verify details and guide you on pricing and pickup eligibility.
@@ -194,7 +237,7 @@ export default function Home() {
           ))}
         </div>
         <div className="text-center mt-6">
-          <Link to="/faqs" className="inline-block bg-green-600 text-white font-bold px-6 py-3 rounded-lg hover:bg-green-700">
+          <Link to="/faqs" className="inline-block bg-blue-600 text-white font-bold px-6 py-3 rounded-lg hover:bg-blue-700">
             View All
           </Link>
         </div>
@@ -210,13 +253,25 @@ export default function Home() {
           <div className="max-w-lg mx-auto flex flex-col sm:flex-row gap-3">
             <input
               type="tel"
-              placeholder="Enter your number"
+              value={subscriberPhone}
+              onChange={(e) => setSubscriberPhone(e.target.value)}
+              placeholder="1234512345"
               className="flex-1 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 font-semibold"
             />
-            <button className="bg-green-600 text-white font-bold px-6 py-3 rounded-lg hover:bg-green-700">
+            <button
+              type="button"
+              onClick={handleSubscribe}
+              disabled={isSubscribing}
+              className="bg-blue-600 text-white font-bold px-6 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-60"
+            >
               Subscribe
             </button>
           </div>
+          {subscribeStatus.message && (
+            <p className={`mt-4 font-semibold ${subscribeStatus.type === 'success' ? 'text-blue-700' : 'text-red-600'}`}>
+              {subscribeStatus.message}
+            </p>
+          )}
         </div>
       </section>
     </div>

@@ -239,13 +239,13 @@ export default function Profile() {
           </div>
         )}
 
-        <div className="inline-flex bg-green-100 rounded-xl p-1 mb-8">
+        <div className="inline-flex bg-blue-100 rounded-xl p-1 mb-8">
           {tabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-10 py-2 rounded-lg text-2xl font-semibold transition ${
-                activeTab === tab ? 'bg-green-700 text-white' : 'text-gray-800 hover:bg-green-200'
+                activeTab === tab ? 'bg-blue-700 text-white' : 'text-gray-800 hover:bg-blue-200'
               }`}
             >
               {tab}
@@ -269,7 +269,7 @@ export default function Profile() {
                         <p className="font-semibold text-lg">{order.order_code}</p>
                         <p className="text-sm text-gray-600">{String(order.created_at).slice(0, 10)}</p>
                       </div>
-                      <span className="px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-semibold">
+                      <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm font-semibold">
                         {order.status}
                       </span>
                     </div>
@@ -291,7 +291,7 @@ export default function Profile() {
                 onChange={(e) => setSearchDate(e.target.value)}
                 className="w-full border rounded-md px-3 py-2 mb-3"
               />
-              <button className="w-full bg-gray-300 rounded-md py-2 text-green-700 font-semibold">Search</button>
+              <button className="w-full bg-gray-300 rounded-md py-2 text-blue-700 font-semibold">Search</button>
             </div>
           </div>
         )}
@@ -300,7 +300,7 @@ export default function Profile() {
           <div>
             <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8 flex items-center justify-between gap-6">
               <div className="flex items-center gap-6">
-              <div className="w-24 h-24 rounded-md bg-green-700 text-white text-5xl font-semibold flex items-center justify-center">
+              <div className="w-24 h-24 rounded-md bg-blue-700 text-white text-5xl font-semibold flex items-center justify-center">
                 {(displayName || 'U').slice(0, 1).toUpperCase()}
               </div>
               <div>
@@ -322,7 +322,7 @@ export default function Profile() {
               <h3 className="text-4xl font-semibold">Saved Addresses</h3>
               <button
                 onClick={openAddAddress}
-                className="bg-green-700 text-white px-6 py-2 rounded-md font-semibold hover:bg-green-800"
+                className="bg-blue-700 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-800"
               >
                 + Add new address
               </button>
@@ -343,7 +343,7 @@ export default function Profile() {
                     <p className="text-gray-700">{address.state}</p>
                     <p className="text-gray-700">Mobile: +91-{user?.phone_number}</p>
                     {address.is_default && (
-                      <span className="inline-block mt-2 px-2 py-1 text-xs font-semibold rounded bg-green-100 text-green-700">
+                      <span className="inline-block mt-2 px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-700">
                         Default
                       </span>
                     )}
@@ -351,7 +351,7 @@ export default function Profile() {
                   <div className="border-t bg-gray-50 px-6 py-3 flex justify-center gap-8">
                     <button
                       onClick={() => openEditAddress(address)}
-                      className="text-green-700 font-semibold hover:underline"
+                      className="text-blue-700 font-semibold hover:underline"
                     >
                       Edit Address
                     </button>
@@ -395,7 +395,7 @@ export default function Profile() {
               </div>
               <button
                 onClick={copyReferralCode}
-                className="bg-green-700 text-white px-5 py-2 rounded-md font-semibold hover:bg-green-800"
+                className="bg-blue-700 text-white px-5 py-2 rounded-md font-semibold hover:bg-blue-800"
               >
                 Copy Code
               </button>
@@ -404,11 +404,11 @@ export default function Profile() {
             <div className="grid grid-cols-2 gap-4">
               <div className="border rounded-lg p-4 text-center">
                 <p className="text-sm text-gray-500">Total Referrals</p>
-                <p className="text-4xl font-bold text-green-700">-</p>
+                <p className="text-4xl font-bold text-blue-700">-</p>
               </div>
               <div className="border rounded-lg p-4 text-center">
                 <p className="text-sm text-gray-500">Referral Points</p>
-                <p className="text-4xl font-bold text-green-700">{user?.referral_points || 0}</p>
+                <p className="text-4xl font-bold text-blue-700">{user?.referral_points || 0}</p>
               </div>
             </div>
 
@@ -437,7 +437,7 @@ export default function Profile() {
 
             <button
               type="button"
-              className="border-2 border-green-700 rounded-lg px-5 py-2 text-green-700 font-semibold mb-5"
+              className="border-2 border-blue-700 rounded-lg px-5 py-2 text-blue-700 font-semibold mb-5"
             >
               📍 Detect My Location
             </button>

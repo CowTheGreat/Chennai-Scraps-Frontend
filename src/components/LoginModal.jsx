@@ -77,7 +77,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
 
         {step === 'phone' ? (
           <form onSubmit={handleSendOTP}>
-            <div className="w-full mb-4 border-2 border-green-500 rounded-lg flex items-center overflow-hidden">
+            <div className="w-full mb-4 border-2 border-blue-500 rounded-lg flex items-center overflow-hidden">
               <span className="px-3 py-3 bg-gray-50 border-r text-gray-700 font-medium">+91</span>
               <input
                 type="tel"
