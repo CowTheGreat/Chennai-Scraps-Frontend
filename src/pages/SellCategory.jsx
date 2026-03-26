@@ -14,6 +14,7 @@ export default function SellCategory() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const [category, setCategory] = useState(null);
+  const [allCategories, setAllCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [quantity, setQuantity] = useState(1);
@@ -26,6 +27,7 @@ export default function SellCategory() {
       try {
         setLoading(true);
         const categories = await catalogAPI.getCategories();
+        setAllCategories(categories.filter((item) => item.is_active));
         const match = categories.find((item) => item.slug === slug);
         if (!match) {
           setError('Category not found.');
@@ -56,6 +58,13 @@ export default function SellCategory() {
     if (!category) return 0;
     return Number(category.base_price || 0) * Number(quantity || 1);
   }, [category, quantity]);
+
+  const relatedCategories = useMemo(() => {
+    if (!category) return [];
+    return allCategories
+      .filter((item) => item.id !== category.id)
+      .slice(0, 2);
+  }, [allCategories, category]);
 
   const openLoginPrompt = () => {
     setLoginNotice('Please login to continue filling details and add this item to your cart.');
@@ -243,9 +252,60 @@ export default function SellCategory() {
           </div>
         </div>
 
+        <section className="mt-6 bg-white border border-slate-200 rounded-xl p-5 md:p-6">
+          <h2 className="text-2xl font-bold text-slate-900">Description</h2>
+          <p className="mt-2 text-slate-700 leading-8">
+            {category.description || `Sell your old ${category.name.toLowerCase()} with doorstep pickup and quick payment.`}
+          </p>
+        </section>
+
         {feedback && (
           <div className="mt-4 text-center font-semibold text-blue-700">{feedback}</div>
         )}
+
+        <section className="mt-10 bg-white border border-slate-200 rounded-xl p-6 md:p-8">
+          <h2 className="text-3xl font-bold text-slate-900">
+            Sell Your Old {category.name} Online with Chennai Scraps
+          </h2>
+
+          <p className="mt-3 text-slate-700 leading-8">
+            {category.description
+              ? category.description
+              : `Upgrading your ${category.name.toLowerCase()}? Do not let your old unit sit idle. Chennai Scraps gives you a simple flow from instant valuation to doorstep pickup and secure payment.`}
+          </p>
+
+          <h3 className="mt-7 text-2xl font-bold text-slate-900">Why Choose Chennai Scraps?</h3>
+          <ul className="mt-3 list-disc pl-6 text-slate-700 leading-8">
+            <li><strong>Best Market Price:</strong> Get instant competitive rates for your used appliance.</li>
+            <li><strong>Convenient Pickup:</strong> Book a doorstep pickup slot that suits your schedule.</li>
+            <li><strong>Quick Payment:</strong> Get paid digitally after successful pickup verification.</li>
+            <li><strong>Transparent Process:</strong> Clear communication with no hidden deductions.</li>
+          </ul>
+
+          <h3 className="mt-7 text-2xl font-bold text-slate-900">How It Works</h3>
+          <ol className="mt-3 list-decimal pl-6 text-slate-700 leading-8">
+            <li>Choose product details from the form above.</li>
+            <li>Login and add the item to your cart.</li>
+            <li>Place your order with pickup date and get paid after pickup.</li>
+          </ol>
+
+          {relatedCategories.length > 0 && (
+            <div className="mt-7">
+              <h3 className="text-xl font-bold text-slate-900">Looking to Sell More?</h3>
+              <div className="mt-3 flex flex-wrap gap-4">
+                {relatedCategories.map((item) => (
+                  <Link
+                    key={item.id}
+                    to={`/sell-used-appliances/${item.slug}`}
+                    className="text-blue-700 underline font-semibold"
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
       </div>
     </div>
   );
