@@ -5,6 +5,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
   const [step, setStep] = useState('phone'); // 'phone' or 'otp'
   const [phone, setPhone] = useState('');
   const [referralCode, setReferralCode] = useState('');
+  const [fullName, setFullName] = useState('');
   const [otp, setOtp] = useState('');
   const [isNewUser, setIsNewUser] = useState(false);
   const [error, setError] = useState(null);
@@ -37,11 +38,13 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
       const response = await authAPI.verifyOTP(
         digitsOnlyPhone,
         otp,
-        isNewUser ? referralCode : ''
+        isNewUser ? referralCode : '',
+        isNewUser ? fullName : ''
       );
       localStorage.setItem('access_token', response.access);
       localStorage.setItem('refresh_token', response.refresh);
       localStorage.setItem('phone', digitsOnlyPhone);
+      localStorage.setItem('profile_display_name', response?.user?.full_name || fullName || '');
       onLoginSuccess();
       onClose();
     } catch (err) {
@@ -110,6 +113,17 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
             {isNewUser && (
               <input
                 type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Full Name *"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            )}
+
+            {isNewUser && (
+              <input
+                type="text"
                 value={referralCode}
                 onChange={(e) => setReferralCode(e.target.value.toUpperCase().trim())}
                 placeholder="Referral Code (optional)"
@@ -138,6 +152,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
               onClick={() => {
                 setStep('phone');
                 setReferralCode('');
+                setFullName('');
                 setIsNewUser(false);
               }}
               className="w-full bg-gray-300 text-gray-800 py-2 rounded-lg font-semibold hover:bg-gray-400"

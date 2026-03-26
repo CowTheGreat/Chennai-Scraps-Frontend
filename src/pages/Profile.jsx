@@ -28,6 +28,10 @@ export default function Profile() {
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [addressForm, setAddressForm] = useState(emptyAddress);
   const [savingAddress, setSavingAddress] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [profileForm, setProfileForm] = useState({ full_name: '', email: '' });
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -59,10 +63,17 @@ export default function Profile() {
   }, [navigate]);
 
   const displayName = useMemo(() => {
+    if (user?.full_name) return user.full_name;
     const defaultAddress = addresses.find((a) => a.is_default) || addresses[0];
     if (defaultAddress?.name) return defaultAddress.name;
     return `User ${user?.phone_number || ''}`.trim();
   }, [addresses, user]);
+
+  useEffect(() => {
+    if (displayName) {
+      localStorage.setItem('profile_display_name', displayName);
+    }
+  }, [displayName]);
 
   const referralCode = useMemo(() => {
     if (user?.referral_code) {
@@ -97,6 +108,18 @@ export default function Profile() {
   const closeAddressModal = () => {
     setShowAddressModal(false);
     setAddressForm(emptyAddress);
+  };
+
+  const openProfileModal = () => {
+    setProfileForm({
+      full_name: user?.full_name || '',
+      email: user?.email || '',
+    });
+    setShowProfileModal(true);
+  };
+
+  const closeProfileModal = () => {
+    setShowProfileModal(false);
   };
 
   const handleAddressField = (e) => {
@@ -157,6 +180,47 @@ export default function Profile() {
       alert('Referral code copied!');
     } catch {
       alert(`Your referral code: ${referralCode}`);
+    }
+  };
+
+  const handleProfileSave = async (e) => {
+    e.preventDefault();
+    try {
+      setSavingProfile(true);
+      const updated = await userAPI.updateProfile({
+        full_name: profileForm.full_name,
+        email: profileForm.email,
+      });
+      setUser(updated);
+      localStorage.setItem('profile_display_name', updated.full_name || '');
+      closeProfileModal();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSavingProfile(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm(
+      'Are you sure you want to delete your account? This will remove your addresses and pickup records permanently.'
+    );
+    if (!confirmed) return;
+
+    try {
+      setDeletingAccount(true);
+      await userAPI.deleteAccount();
+
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('phone');
+      localStorage.removeItem('profile_display_name');
+
+      navigate('/');
+      window.location.reload();
+    } catch (err) {
+      setError(err.message);
+      setDeletingAccount(false);
     }
   };
 
@@ -234,7 +298,8 @@ export default function Profile() {
 
         {activeTab === 'Account' && (
           <div>
-            <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8 flex items-center gap-6">
+            <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8 flex items-center justify-between gap-6">
+              <div className="flex items-center gap-6">
               <div className="w-24 h-24 rounded-md bg-green-700 text-white text-5xl font-semibold flex items-center justify-center">
                 {(displayName || 'U').slice(0, 1).toUpperCase()}
               </div>
@@ -243,6 +308,14 @@ export default function Profile() {
                 <p className="text-gray-700 mt-1">+91-{user?.phone_number}</p>
                 <p className="text-gray-700">{user?.email || 'No email added yet'}</p>
               </div>
+              </div>
+
+              <button
+                onClick={openProfileModal}
+                className="bg-blue-600 text-white px-5 py-2 rounded-md font-semibold hover:bg-blue-700"
+              >
+                Edit
+              </button>
             </div>
 
             <div className="flex items-center justify-between mb-4">
@@ -299,7 +372,13 @@ export default function Profile() {
             </div>
 
             <div className="mt-8 bg-white rounded-lg border border-gray-200 p-4 flex justify-center">
-              <button className="bg-red-500 text-white px-6 py-2 rounded-md font-semibold">Delete My Account</button>
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deletingAccount}
+                className="bg-red-500 text-white px-6 py-2 rounded-md font-semibold hover:bg-red-600 disabled:bg-red-300"
+              >
+                {deletingAccount ? 'Deleting...' : 'Delete My Account'}
+              </button>
             </div>
           </div>
         )}
@@ -441,6 +520,55 @@ export default function Profile() {
               className="w-full bg-green-700 text-white py-4 rounded-lg text-2xl font-semibold hover:bg-green-800 disabled:bg-green-400"
             >
               {savingAddress ? 'Saving...' : addressForm.id ? 'Update Address' : 'Add Address'}
+            </button>
+          </form>
+        </div>
+      )}
+
+      {showProfileModal && (
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+          <form
+            onSubmit={handleProfileSave}
+            className="bg-white rounded-xl w-full max-w-xl p-8 relative"
+          >
+            <button
+              type="button"
+              onClick={closeProfileModal}
+              className="absolute right-6 top-5 text-4xl text-gray-600 hover:text-black"
+            >
+              ×
+            </button>
+
+            <h3 className="text-4xl font-semibold mb-6">Edit Profile</h3>
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-lg font-medium">Full Name</label>
+                <input
+                  value={profileForm.full_name}
+                  onChange={(e) => setProfileForm((prev) => ({ ...prev, full_name: e.target.value }))}
+                  className="w-full border rounded-lg px-4 py-3 mt-2"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-lg font-medium">Email</label>
+                <input
+                  type="email"
+                  value={profileForm.email}
+                  onChange={(e) => setProfileForm((prev) => ({ ...prev, email: e.target.value }))}
+                  className="w-full border rounded-lg px-4 py-3 mt-2"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={savingProfile}
+              className="w-full mt-6 bg-blue-600 text-white py-3 rounded-lg text-xl font-semibold hover:bg-blue-700 disabled:bg-blue-300"
+            >
+              {savingProfile ? 'Saving...' : 'Save Changes'}
             </button>
           </form>
         </div>

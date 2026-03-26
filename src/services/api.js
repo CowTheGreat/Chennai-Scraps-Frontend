@@ -70,13 +70,14 @@ export const authAPI = {
       }),
     }),
   
-  verifyOTP: (phone, otp, referredByCode = '') =>
+  verifyOTP: (phone, otp, referredByCode = '', fullName = '') =>
     apiCall('/auth/verify-otp/', {
       method: 'POST',
       body: JSON.stringify({
         phone_number: normalizePhone(phone),
         otp_code: String(otp || '').replace(/\D/g, '').slice(0, 6),
         referred_by_code: String(referredByCode || '').trim().toUpperCase(),
+        full_name: String(fullName || '').trim(),
       }),
     }),
 };
@@ -133,6 +134,12 @@ export const userAPI = {
   setDefaultAddress: (id) =>
     apiCall(`/auth/addresses/${id}/set_default/`, {
       method: 'POST',
+      body: JSON.stringify({}),
+    }),
+
+  deleteAccount: () =>
+    apiCall('/auth/users/delete_account/', {
+      method: 'DELETE',
       body: JSON.stringify({}),
     }),
 };
