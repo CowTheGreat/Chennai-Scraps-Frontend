@@ -30,6 +30,8 @@ export default function Home() {
     return <div className="text-center text-red-500 mt-10">Error: {error}</div>;
   }
 
+  const getCardImage = (category) => category.display_image || category.image_url || category.image || null;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Hero Section */}
@@ -49,9 +51,9 @@ export default function Home() {
               key={category.id}
               className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transform transition hover:scale-105 cursor-pointer"
             >
-              {category.image_url && (
+              {getCardImage(category) && (
                 <img
-                  src={category.image_url}
+                  src={getCardImage(category)}
                   alt={category.name}
                   className="w-full h-48 object-cover"
                 />
