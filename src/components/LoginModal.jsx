@@ -6,6 +6,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
   const [phone, setPhone] = useState('');
   const [referralCode, setReferralCode] = useState('');
   const [otp, setOtp] = useState('');
+  const [isNewUser, setIsNewUser] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const digitsOnlyPhone = phone.replace(/\D/g, '').slice(-10);
@@ -18,7 +19,8 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
     try {
       setLoading(true);
       setError(null);
-      await authAPI.sendOTP(digitsOnlyPhone);
+      const response = await authAPI.sendOTP(digitsOnlyPhone);
+      setIsNewUser(!!response?.is_new_user);
       setStep('otp');
     } catch (err) {
       setError(err.message);
@@ -32,7 +34,11 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
     try {
       setLoading(true);
       setError(null);
-      const response = await authAPI.verifyOTP(digitsOnlyPhone, otp, referralCode);
+      const response = await authAPI.verifyOTP(
+        digitsOnlyPhone,
+        otp,
+        isNewUser ? referralCode : ''
+      );
       localStorage.setItem('access_token', response.access);
       localStorage.setItem('refresh_token', response.refresh);
       localStorage.setItem('phone', digitsOnlyPhone);
@@ -87,14 +93,6 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
               <a href="#" className="text-blue-600 underline">Privacy Policy</a>
             </p>
 
-            <input
-              type="text"
-              value={referralCode}
-              onChange={(e) => setReferralCode(e.target.value.toUpperCase().trim())}
-              placeholder="Referral Code (optional)"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-
             <button
               type="submit"
               disabled={loading || !canSendOtp}
@@ -108,6 +106,17 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
         ) : (
           <form onSubmit={handleVerifyOTP}>
             <p className="text-gray-600 mb-4">OTP sent to +91 {digitsOnlyPhone}</p>
+
+            {isNewUser && (
+              <input
+                type="text"
+                value={referralCode}
+                onChange={(e) => setReferralCode(e.target.value.toUpperCase().trim())}
+                placeholder="Referral Code (optional)"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            )}
+
             <input
               type="text"
               value={otp}
@@ -126,7 +135,11 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
             </button>
             <button
               type="button"
-              onClick={() => setStep('phone')}
+              onClick={() => {
+                setStep('phone');
+                setReferralCode('');
+                setIsNewUser(false);
+              }}
               className="w-full bg-gray-300 text-gray-800 py-2 rounded-lg font-semibold hover:bg-gray-400"
             >
               Change Number
