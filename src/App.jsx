@@ -31,6 +31,7 @@ function App() {
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('phone');
     setIsLoggedIn(false);
+    window.location.href = '/';
   };
 
   const handleLoginSuccess = () => {
