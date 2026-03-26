@@ -26,16 +26,17 @@ body {
   background: #ffffff;
   border-bottom: 1px solid var(--line);
   box-shadow: 0 8px 20px rgba(17, 24, 39, 0.06);
+  line-height: 1.2;
 }
 
 .site-header-inner {
-  max-width: 1220px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 10px 18px;
+  padding: 16px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 16px;
 }
 
 .site-brand {
@@ -45,25 +46,28 @@ body {
   text-decoration: none;
   color: #2563eb;
   font-weight: 700;
+  font-size: 1.125rem;
 }
 
 .site-brand img {
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
 }
 
 .site-nav {
   display: flex;
   align-items: center;
-  gap: 14px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px 16px;
 }
 
 .site-nav a {
   text-decoration: none;
   color: #374151;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .site-nav a.back-link {
@@ -197,7 +201,7 @@ a {
 
 @media (max-width: 640px) {
   .site-header-inner {
-    padding: 10px 12px;
+    padding: 12px;
     flex-wrap: wrap;
   }
 
@@ -217,6 +221,10 @@ a {
     display: flex;
   }
 
+  .site-brand {
+    font-size: 1.05rem;
+  }
+
   .page {
     padding: 12px;
   }
@@ -224,5 +232,11 @@ a {
   .hero-content,
   .article {
     padding: 16px;
+  }
+}
+
+@media (min-width: 640px) {
+  .site-brand {
+    font-size: 1.5rem;
   }
 }
