@@ -144,4 +144,12 @@ export const userAPI = {
     }),
 };
 
+export const serviceAPI = {
+  bookCall: (payload) =>
+    apiCall('/catalog/service-requests/', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+};
+
 export default apiCall;
