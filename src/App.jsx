@@ -56,8 +56,13 @@ function App() {
         {/* Navbar */}
         <nav className="bg-white shadow-md">
           <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <Link to="/" className="text-2xl font-bold text-blue-600">
-              Chennai-Scraps
+            <Link to="/" className="flex items-center gap-3 text-2xl font-bold text-blue-600">
+              <img
+                src="/logo.png"
+                alt="Chennai Scraps logo"
+                className="w-10 h-10 object-contain"
+              />
+              <span>Chennai Scraps</span>
             </Link>
             <div className="flex flex-wrap gap-4 items-center">
               <Link to="/" className="text-gray-700 hover:text-blue-600 font-semibold">
