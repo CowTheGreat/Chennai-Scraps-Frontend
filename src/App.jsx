@@ -13,9 +13,14 @@ import Resources from './pages/Resources';
 import Faqs from './pages/Faqs';
 import AboutUs from './pages/AboutUs';
 import Services from './pages/Services';
+import CancellationPolicy from './pages/CancellationPolicy';
+import ShippingPolicy from './pages/ShippingPolicy';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsConditions from './pages/TermsConditions';
 
 // Components
 import LoginModal from './components/LoginModal';
+import Footer from './components/Footer';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -180,7 +185,13 @@ function App() {
           <Route path="/services" element={<Services />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/policies/cancellation" element={<CancellationPolicy />} />
+          <Route path="/policies/shipping" element={<ShippingPolicy />} />
+          <Route path="/policies/privacy" element={<PrivacyPolicy />} />
+          <Route path="/policies/terms" element={<TermsConditions />} />
         </Routes>
+
+        <Footer />
 
         {/* Login Modal */}
         <LoginModal
