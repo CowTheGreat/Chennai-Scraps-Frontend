@@ -84,7 +84,7 @@ export default function Home() {
               <p className="text-gray-600 font-semibold mb-4 min-h-[48px]">{category.description || 'Get the best resale value with doorstep pickup.'}</p>
               <div className="flex justify-between items-center">
                 <span className="text-2xl font-bold text-blue-700">Old Up To: ₹{category.base_price}</span>
-                <Link to="/sell-now" className="bg-blue-600 text-white font-bold px-4 py-2 rounded-lg hover:bg-blue-700">
+                <Link to={`/sell-used-appliances/${category.slug}`} className="bg-blue-600 text-white font-bold px-4 py-2 rounded-lg hover:bg-blue-700">
                   Sell Now
                 </Link>
               </div>

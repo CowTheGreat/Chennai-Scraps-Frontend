@@ -7,6 +7,8 @@ import Home from './pages/Home';
 import Cart from './pages/Cart';
 import Profile from './pages/Profile';
 import SellNow from './pages/SellNow';
+import SellUsedAppliances from './pages/SellUsedAppliances';
+import SellCategory from './pages/SellCategory';
 import Resources from './pages/Resources';
 import Faqs from './pages/Faqs';
 import AboutUs from './pages/AboutUs';
@@ -33,6 +35,12 @@ function App() {
 
     window.addEventListener('storage', onStorage);
     return () => window.removeEventListener('storage', onStorage);
+  }, []);
+
+  useEffect(() => {
+    const onOpenLogin = () => setShowLoginModal(true);
+    window.addEventListener('open-login-modal', onOpenLogin);
+    return () => window.removeEventListener('open-login-modal', onOpenLogin);
   }, []);
 
   const handleLogout = () => {
@@ -164,6 +172,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/sell-now" element={<SellNow />} />
+          <Route path="/sell-used-appliances" element={<SellUsedAppliances />} />
+          <Route path="/sell-used-appliances/:slug" element={<SellCategory />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/faqs" element={<Faqs />} />
           <Route path="/about-us" element={<AboutUs />} />
