@@ -19,6 +19,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [profileDisplayName, setProfileDisplayName] = useState('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     // Check if user is already logged in
@@ -40,13 +41,17 @@ function App() {
     localStorage.removeItem('phone');
     localStorage.removeItem('profile_display_name');
     setIsLoggedIn(false);
+    setIsMobileMenuOpen(false);
     window.location.href = '/';
   };
 
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
     setProfileDisplayName(localStorage.getItem('profile_display_name') || '');
+    setIsMobileMenuOpen(false);
   };
+
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   const profileInitial = (profileDisplayName || 'U').trim().charAt(0).toUpperCase();
 
@@ -55,37 +60,61 @@ function App() {
       <div className="min-h-screen bg-gray-50">
         {/* Navbar */}
         <nav className="bg-white shadow-md">
-          <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 md:flex md:justify-between md:items-center md:gap-6">
+            <div className="flex justify-between items-center">
             <Link to="/" className="flex items-center gap-3 text-2xl font-bold text-blue-600">
               <img
                 src="/logo.png"
                 alt="Chennai Scraps logo"
                 className="w-10 h-10 object-contain"
               />
-              <span>Chennai Scraps</span>
+              <span className="text-lg sm:text-2xl">Chennai Scraps</span>
             </Link>
-            <div className="flex flex-wrap gap-4 items-center">
-              <Link to="/" className="text-gray-700 hover:text-blue-600 font-semibold">
+
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+              className="md:hidden w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center text-gray-700"
+              aria-label="Toggle navigation menu"
+            >
+              {isMobileMenuOpen ? (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  <path d="M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              ) : (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 7H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  <path d="M4 12H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  <path d="M4 17H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              )}
+            </button>
+            </div>
+
+            <div className={`${isMobileMenuOpen ? 'flex' : 'hidden'} md:flex flex-col md:flex-row gap-3 lg:gap-4 items-start md:items-center mt-4 md:mt-0`}>
+              <Link to="/" onClick={closeMobileMenu} className="text-gray-700 hover:text-blue-600 font-semibold">
                 Home
               </Link>
-              <Link to="/sell-now" className="text-gray-700 hover:text-blue-600 font-semibold">
+              <Link to="/sell-now" onClick={closeMobileMenu} className="text-gray-700 hover:text-blue-600 font-semibold">
                 Sell Now
               </Link>
-              <Link to="/resources" className="text-gray-700 hover:text-blue-600 font-semibold">
+              <Link to="/resources" onClick={closeMobileMenu} className="text-gray-700 hover:text-blue-600 font-semibold">
                 Resources
               </Link>
-              <Link to="/faqs" className="text-gray-700 hover:text-blue-600 font-semibold">
+              <Link to="/faqs" onClick={closeMobileMenu} className="text-gray-700 hover:text-blue-600 font-semibold">
                 FAQs
               </Link>
-              <Link to="/about-us" className="text-gray-700 hover:text-blue-600 font-semibold">
+              <Link to="/about-us" onClick={closeMobileMenu} className="text-gray-700 hover:text-blue-600 font-semibold">
                 About Us
               </Link>
-              <Link to="/services" className="text-gray-700 hover:text-blue-600 font-semibold">
+              <Link to="/services" onClick={closeMobileMenu} className="text-gray-700 hover:text-blue-600 font-semibold">
                 Services
               </Link>
 
               <Link
                 to="/cart"
+                onClick={closeMobileMenu}
                 className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-700 hover:text-blue-600 hover:border-blue-400"
                 title="Cart"
                 aria-label="Cart"
@@ -101,6 +130,7 @@ function App() {
                 <>
                   <Link
                     to="/profile"
+                    onClick={closeMobileMenu}
                     className="w-10 h-10 rounded-full bg-blue-600 text-white font-semibold flex items-center justify-center hover:bg-blue-700"
                     title="Profile"
                     aria-label="Profile"
@@ -117,7 +147,10 @@ function App() {
               )}
               {!isLoggedIn && (
                 <button
-                  onClick={() => setShowLoginModal(true)}
+                  onClick={() => {
+                    setShowLoginModal(true);
+                    setIsMobileMenuOpen(false);
+                  }}
                   className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
                 >
                   Login
