@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 
-const FAQS = [
+export const FAQS = [
   {
     q: 'How do I sell my old appliances on Chennai Scraps?',
     a: 'Selling your old appliances is simple with Chennai Scraps. Select the appliance you want to sell and schedule a free doorstep pick-up. Our logistics partner will come to your location, pick up the product, and process payment quickly through secure online transfer. It is one of the easiest ways to sell used or old appliances such as ACs, refrigerators, washing machines, and more in Chennai.',

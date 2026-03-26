@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { catalogAPI, marketingAPI } from '../services/api';
+import { FAQS } from './Faqs';
 
 const inferCategoryType = (category = {}) => {
   if (category.category_type) {
@@ -221,17 +222,11 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
         <h2 className="text-4xl font-bold text-center text-gray-900 mb-6">FAQs</h2>
         <div className="space-y-3">
-          {[
-            'How do I sell my old appliances on Chennai Scraps?',
-            'What types of appliances does Chennai Scraps accept?',
-            'Can I sell non-working appliances to Chennai Scraps?',
-            'What if my brand or category is not listed in options?',
-            'Is there any fee for doorstep pickup service?',
-          ].map((question) => (
-            <details key={question} className="bg-white border border-blue-200 rounded-lg px-4 py-3">
-              <summary className="cursor-pointer text-lg font-bold text-gray-900">{question}</summary>
+          {FAQS.slice(0, 5).map((faq) => (
+            <details key={faq.q} className="bg-white border border-blue-200 rounded-lg px-4 py-3">
+              <summary className="cursor-pointer text-lg font-bold text-gray-900">{faq.q}</summary>
               <p className="mt-3 text-gray-700 font-semibold">
-                Please raise a request and our team will verify details and guide you on pricing and pickup eligibility.
+                {faq.a}
               </p>
             </details>
           ))}
